@@ -5,5 +5,17 @@
     <Setting Name="LogFilePath" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="GeneratorBits" Type="System.Int32" Scope="User">
+      <Value Profile="(Default)">4096</Value>
+    </Setting>
+    <Setting Name="GenMaxkV" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">180</Value>
+    </Setting>
+    <Setting Name="GenMaxFilCurrent" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">6</Value>
+    </Setting>
+    <Setting Name="GenMaxmA" Type="System.Double" Scope="User">
+      <Value Profile="(Default)">30</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

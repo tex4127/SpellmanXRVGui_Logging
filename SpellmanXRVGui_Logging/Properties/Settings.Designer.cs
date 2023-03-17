@@ -34,5 +34,53 @@ namespace SpellmanXRVGui_Logging.Properties {
                 this["LogFilePath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("4096")]
+        public int GeneratorBits {
+            get {
+                return ((int)(this["GeneratorBits"]));
+            }
+            set {
+                this["GeneratorBits"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("180")]
+        public double GenMaxkV {
+            get {
+                return ((double)(this["GenMaxkV"]));
+            }
+            set {
+                this["GenMaxkV"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("6")]
+        public double GenMaxFilCurrent {
+            get {
+                return ((double)(this["GenMaxFilCurrent"]));
+            }
+            set {
+                this["GenMaxFilCurrent"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("30")]
+        public double GenMaxmA {
+            get {
+                return ((double)(this["GenMaxmA"]));
+            }
+            set {
+                this["GenMaxmA"] = value;
+            }
+        }
     }
 }

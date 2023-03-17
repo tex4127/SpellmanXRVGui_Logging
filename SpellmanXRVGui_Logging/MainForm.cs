@@ -18,7 +18,7 @@ namespace SpellmanXRVGui_Logging
         #region Variables
 
         bool GeneratorConnected = false;
-        const string DTECHRS232PNPID = "VID_0403&PID_6001";
+        const string DTECHRS232PNPID = "VID_0403+PID_6001";
         private string RS232Port;
         /// <summary>
         /// class to store the usb device found for later procesing
@@ -95,7 +95,7 @@ namespace SpellmanXRVGui_Logging
         /// <returns></returns>
         private string GetPortNumber(string s)
         {
-            return Regex.Replace(s, @"[^\d]", "");
+            return "COM" + Regex.Replace(s, @"[^\d]", "");
         }
 
         /// <summary>
@@ -108,39 +108,36 @@ namespace SpellmanXRVGui_Logging
         {
             //Search through Win32 for all PNP devices that have the porper PNP ID
             Console.WriteLine("Finding all RS232 Devices");
-            try
+
+            List<USBDeviceInfo> devices = new List<USBDeviceInfo>();
+            //now set up the query using a management collection object
+            ManagementObjectCollection collection;
+            //now use a managementsearcher to find all PNP devices as
+            using (ManagementObjectSearcher searcher = new ManagementObjectSearcher(@"SELECT * FROM Win32_PnpEntity"))
+                collection = searcher.Get();
+            Console.WriteLine(collection.Count);
+            foreach (var device in collection)
             {
-                List<USBDeviceInfo> devices = new List<USBDeviceInfo>();
-                //now set up the query using a management collection object
-                ManagementObjectCollection collection;
-                //now use a managementsearcher to find all PNP devices as
-                using (ManagementObjectSearcher searcher = new ManagementObjectSearcher(@"SELECT * FROM Win32_PnpEntity"))
-                    collection = searcher.Get();
-                Console.WriteLine(collection.Count);
-                foreach (var device in collection)
+
+                
+                if (Convert.ToString(device.GetPropertyValue("PNPDeviceID")).Contains(DTECHRS232PNPID))
                 {
+                    devices.Add(new USBDeviceInfo(
+                        (string)device.GetPropertyValue("DeviceID"),
+                        (string)device.GetPropertyValue("PNPDeviceID"),
+                        (string)device.GetPropertyValue("Description"),
+                        (string)device.GetPropertyValue("Name")
+                         ));
 
-                    
-                    
-                    if (Convert.ToString(device.GetPropertyValue("PNPDeviceID")).Contains(DTECHRS232PNPID))
-                    {
-                        devices.Add(new USBDeviceInfo(
-                            (string)device.GetPropertyValue("DeviceID"),
-                            (string)device.GetPropertyValue("PNPDeviceID"),
-                            (string)device.GetPropertyValue("Description"),
-                            (string)device.GetPropertyValue("Name")
-                            ));
-                        Console.WriteLine("Device ID: " + (string)device.GetPropertyValue("DeviceID") +
-                                      "||PNP ID:    " + (string)device.GetPropertyValue("PNPDeviceID") +
-                                      "||Desc:      " + (string)device.GetPropertyValue("Name") +
-                                      "||Name:      " + (string)device.GetPropertyValue("Name"));
-                        Console.WriteLine((string)device.GetPropertyValue("Description"));
-                        Console.WriteLine((string)device.GetPropertyValue("Service"));
-                        Console.WriteLine((string)device.GetPropertyValue("SystemCreationClassName"));
-                    }
-
-                    //Now that we have the device info stored; get the com port name
+                    Console.WriteLine("Device ID: " + (string)device.GetPropertyValue("DeviceID") +
+                                     // "||PNP ID:    " + (string)device.GetPropertyValue("PNPDeviceID") +
+                                     // "||Desc:      " + (string)device.GetPropertyValue("Dexcription") +
+                                     "||Name:      " + (string)device.GetPropertyValue("Name"));
                     RS232Port = GetPortNumber((string)device.GetPropertyValue("Name"));
+                }
+                    
+                    //Now that we have the device info stored; get the com port name
+                    //RS232Port = GetPortNumber((string)device.GetPropertyValue("Name"));
                 }
                 TSC.WriteAttributeThreadSafe<ToolStripTextBox>(ref toolStripTextBoxGeneratorComPort, RS232Port);
                 Console.WriteLine("Generator found at: " + RS232Port);
@@ -172,12 +169,7 @@ namespace SpellmanXRVGui_Logging
                     return false;
                 }
                 
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Could not find connected generator, please check connection. " + ex.Message, "Error", MessageBoxButtons.OK);
-                return false;
-            };
+            
         }
 
         #endregion
